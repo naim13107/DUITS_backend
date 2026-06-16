@@ -59,7 +59,7 @@ def generate_recruitment_pdf(applicant_data):
     )
 
     payment_status_raw = applicant_data.get("payment_status", applicant_data.get("is_paid"))
-    payment_status = "Paid" if payment_status_raw in (True, "COMPLETED", "Paid") else "Unpaid"
+    payment_status = "Paid" if payment_status_raw in (True, "PAID", "COMPLETED", "Paid") else "Unpaid"
 
     data = [
         ["Applicant Information", ""],

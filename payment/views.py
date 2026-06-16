@@ -168,9 +168,9 @@ class PaymentViewSet(viewsets.ViewSet):
                 # ── Sync application payment fields ───────────────────────
                 application = transaction.application
                 if application:
-                    application.payment_status = 'COMPLETED'
+                    application.payment_status = 'PAID'          # matches STATUS_CHOICES
                     application.transaction_id = transaction.transaction_id or transaction.tracking_id
-                    application.payment_response = str(verify_data)
+                    application.payment_response = verify_data   # JSONField — pass dict, not str
                     application.save(update_fields=['payment_status', 'transaction_id', 'payment_response'])
 
                 # ── Send invoice PDF email ─────────────────────────────────
@@ -212,7 +212,13 @@ class PaymentViewSet(viewsets.ViewSet):
         track_id = data.get('mer_txnid') or data.get('tran_id')
 
         if track_id:
-            Transaction.objects.filter(tracking_id=track_id, status='PENDING').update(status='FAILED')
+            trx = Transaction.objects.filter(tracking_id=track_id, status='PENDING').first()
+            if trx:
+                trx.status = 'FAILED'
+                trx.save(update_fields=['status'])
+                if trx.application:
+                    trx.application.payment_status = 'FAILED'
+                    trx.application.save(update_fields=['payment_status'])
 
         return redirect(f"{FRONTEND_BASE}/recruitment/failed")
 
@@ -222,6 +228,10 @@ class PaymentViewSet(viewsets.ViewSet):
         track_id = data.get('mer_txnid') or data.get('tran_id')
 
         if track_id:
-            Transaction.objects.filter(tracking_id=track_id, status='PENDING').update(status='CANCELLED')
+            trx = Transaction.objects.filter(tracking_id=track_id, status='PENDING').first()
+            if trx:
+                trx.status = 'CANCELLED'
+                trx.save(update_fields=['status'])
+                # No matching choice for CANCELLED in application, keep as PENDING
 
         return redirect(f"{FRONTEND_BASE}/recruitment/cancelled")
