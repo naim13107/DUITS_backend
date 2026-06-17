@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'contact',
     'analytics',
     'payment',
+    'notice',
     'api',
 ]
 
