@@ -170,6 +170,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # DJOSER CONFIGURATION
 # ==========================================
 DJOSER = {
+    'SERIALIZERS': {
+        'user': 'users.serializers.CustomUserSerializer',
+        'current_user': 'users.serializers.CustomUserSerializer',
+    }, # <--- ADDED THIS COMMA!
+    
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
     'TOKEN_MODEL': None, # We use JWT, not standard tokens
