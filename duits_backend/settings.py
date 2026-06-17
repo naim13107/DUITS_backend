@@ -166,16 +166,27 @@ import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# ==========================================
+# DJOSER CONFIGURATION
+# ==========================================
 DJOSER = {
-    'LOGIN_FIELD': 'email', 
+    'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'SERIALIZERS': {
-        # Point these explicitly to your users app
-        'user_create': 'users.serializers.CustomUserCreateSerializer',
-        'user': 'users.serializers.CustomUserSerializer',
-        'current_user': 'users.serializers.CustomUserSerializer',
-    },
+    'TOKEN_MODEL': None, # We use JWT, not standard tokens
+    
+    # --- NEW EMAIL SETTINGS ---
+    'SEND_ACTIVATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
+    
+    # ⚠️ Point these URLs to your React Frontend (Vite uses port 5173)
+    'ACTIVATION_URL': 'activate/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
 }
+
+# Force Djoser to use your frontend domain in the email links
+DOMAIN = 'localhost:5173'
+SITE_NAME = 'Dhaka University IT Society'
 
 SWAGGER_SETTINGS = {
    'SECURITY_DEFINITIONS': {
@@ -196,3 +207,17 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ),
 }
+
+# ==========================================
+# EMAIL SETTINGS
+# ==========================================
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+
+# ⚠️ Replace these with your actual Gmail details
+# Note: Use an "App Password" (16 characters), NOT your normal Gmail password!
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Store this in your .env file for security!
+EMAIL_HOST_PASSWORD = config('APPPASS')  # Store this in your .env file for security!
+DEFAULT_FROM_EMAIL = 'DUITS Admin <duits.lab@gmail.com>'
