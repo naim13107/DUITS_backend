@@ -14,7 +14,7 @@ from permissions import IsExecutive
 from .models import Transaction
 from .serializers import TransactionSerializer
 
-FRONTEND_BASE = getattr(settings, 'FRONTEND_BASE_URL', 'https://your-react-frontend.com')
+FRONTEND_BASE = getattr(settings, 'FRONTEND_BASE_URL')
 
 
 class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -37,9 +37,9 @@ class PaymentViewSet(viewsets.ViewSet):
     transaction_id → aamarPay's own gateway ID (`pg_txnid`), stored only
                     after the payment is COMPLETED and verified.
     """
-    AAMARPAY_BASE_URL = getattr(settings, 'AAMARPAY_BASE_URL', 'https://sandbox.aamarpay.com')
-    AAMARPAY_STORE_ID = getattr(settings, 'AAMARPAY_STORE_ID', 'aamarpaytest')
-    AAMARPAY_SIGNATURE_KEY = getattr(settings, 'AAMARPAY_SIGNATURE_KEY', 'dbb74894e82415a2f7ff0ec3a97e4183')
+    AAMARPAY_BASE_URL = getattr(settings, 'AAMARPAY_BASE_URL')
+    AAMARPAY_STORE_ID = getattr(settings, 'AAMARPAY_STORE_ID')
+    AAMARPAY_SIGNATURE_KEY = getattr(settings, 'AAMARPAY_SIGNATURE_KEY')
 
     def get_permissions(self):
         public_actions = {'list', 'initiate', 'payment_success', 'payment_fail', 'payment_cancel'}
@@ -107,7 +107,6 @@ class PaymentViewSet(viewsets.ViewSet):
         if response_data.get('result') == 'true':
             return Response({
                 "payment_url": response_data.get('payment_url'),
-                "tracking_id": transaction.tracking_id,   # return so frontend can reference it
             })
 
         transaction.status = 'FAILED'

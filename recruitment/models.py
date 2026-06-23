@@ -34,6 +34,14 @@ class RecruitmentApplication(models.Model):
         ('FAILED', 'Failed'),
     )
 
+    recruitment_drive = models.ForeignKey(
+        'RecruitmentSettings', 
+        on_delete=models.CASCADE, # <--- Change SET_NULL to CASCADE!
+        null=True, 
+        blank=True, 
+        related_name='applications'
+    )
+
     # Personal Info
     full_name = models.CharField(max_length=255)
     email = models.EmailField()

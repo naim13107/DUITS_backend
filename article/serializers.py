@@ -10,7 +10,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ArticleListSerializer(serializers.ModelSerializer):
     """
-    Used ONLY for the public feed. Lightweight and hides the main content.
+    Used for the public feed and Admin Dashboard list.
     """
     # Dynamically fetch actual names so the frontend public feed can display them easily
     author_name = serializers.ReadOnlyField(source='author.full_name')
@@ -18,10 +18,10 @@ class ArticleListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        # Notice 'content' and 'status' are completely removed to keep the payload fast and secure
+        # FIXED: Added 'status' back so the Admin Dashboard can read the current status on reload!
         fields = (
             'id', 'title', 'cover_image', 'category_name', 
-            'author_name', 'created_at'
+            'author_name', 'created_at', 'status'
         ) 
 
 
@@ -29,7 +29,6 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     """
     Used when a Viewer clicks an article to read it, or an Author/Exec edits it.
     """
-    # 1. Dynamically fetch the actual names for the frontend
     author_name = serializers.ReadOnlyField(source='author.full_name')
     category_name = serializers.ReadOnlyField(source='category.name')
 
@@ -41,8 +40,25 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
             'status', 'created_at', 'updated_at'
         )
         
-        # 2. SECURITY PROJECTIONS:
-        # - author: Set automatically in the View based on who is logged in.
-        # - status: Regular users cannot approve their own articles.
-        # - dates: Should never be manually edited.
-        read_only_fields = ('author', 'status', 'created_at', 'updated_at')
+        # SECURITY PROJECTIONS:
+        read_only_fields = ('author', 'created_at', 'updated_at')
+
+    def validate_status(self, value):
+        """
+        SECURITY CHECK: Ensures that ONLY Admins and Executives can approve/reject articles.
+        If a normal member tries to intercept the API and approve their own article, it blocks them.
+        """
+        request = self.context.get('request')
+        
+        if request and request.user:
+            user = request.user
+            user_role = getattr(user, 'role', '').lower()
+            
+            # If the user is an Admin, Executive, or Junior Executive, allow the status change
+            if user.is_superuser or user.is_staff or user_role in ['executive', 'junior_executive', 'admin']:
+                return value
+                
+            # If a regular member tries to change the status, block the request
+            raise serializers.ValidationError("Permission Denied: Only Executives can approve or reject articles.")
+            
+        return value

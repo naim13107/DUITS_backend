@@ -66,7 +66,9 @@ class RecruitmentApplicationViewSet(viewsets.ModelViewSet):
         return super().create(request, *base_kwargs, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save()
+        # NEW: Automatically attach the active recruitment drive to the applicant
+        active_settings = RecruitmentSettings.objects.filter(is_open=True).first()
+        serializer.save(recruitment_drive=active_settings)
 
     @action(detail=True, methods=['get'], permission_classes=[IsExecutive])
     def download_pdf(self, request, pk=None):

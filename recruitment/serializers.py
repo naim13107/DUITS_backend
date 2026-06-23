@@ -9,21 +9,21 @@ class RecruitmentSettingsSerializer(serializers.ModelSerializer):
 
 
 class RecruitmentApplicationSerializer(serializers.ModelSerializer):
+    # NEW: Expose the actual drive name to the frontend
+    recruitment_drive_name = serializers.ReadOnlyField(source='recruitment_drive.session_name')
+
     class Meta:
         model = RecruitmentApplication
         fields = (
             'id', 'full_name', 'email', 'phone', 'department', 'session', 
             'hall', 'student_id', 'skills', 'motivation', 'github', 
             'linkedin', 'portfolio', 'payment_status', 'transaction_id', 
-            'payment_response', 'pdf_url', 'created_at'
+            'payment_response', 'pdf_url', 'created_at',
+            'recruitment_drive',         # <--- Added
+            'recruitment_drive_name'     # <--- Added
         )
         
-        # SECURITY: Strictly protect all payment and transaction details!
-        # The applicant can only submit their personal info; the server handles the rest.
         read_only_fields = (
-            'payment_status', 
-            'transaction_id', 
-            'payment_response', 
-            'pdf_url', 
-            'created_at'
+            'payment_status', 'transaction_id', 'payment_response', 
+            'pdf_url', 'created_at', 'recruitment_drive', 'recruitment_drive_name'
         )
