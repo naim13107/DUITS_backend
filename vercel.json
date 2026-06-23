@@ -1,0 +1,14 @@
+{
+  "builds": [
+    {
+      "src": "duits_backend/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "duits_backend/wsgi.py"
+    }
+  ]
+}
