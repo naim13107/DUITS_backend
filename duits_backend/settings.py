@@ -3,8 +3,8 @@ from pathlib import Path
 from decouple import config 
 from datetime import timedelta
 
-FRONTEND_ALLOW = config('FRONTEND_ALLOW')
-BACKEND_ALLOW = config('BACKEND_ALLOW')
+FRONTEND_ALLOW = config('FRONTEND_ALLOW',default = '*')
+BACKEND_ALLOW = config('BACKEND_ALLOW',default = '*')
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -18,7 +18,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG',default = False)
 
-ALLOWED_HOSTS = [BACKEND_ALLOW, FRONTEND_ALLOW]
+ALLOWED_HOSTS = [BACKEND_ALLOW, FRONTEND_ALLOW , 'duits-backend.vercel.app', 'duits-frontend.vercel.app']
 AUTH_USER_MODEL = 'users.User'
 
 # Application definition
