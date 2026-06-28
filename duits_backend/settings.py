@@ -183,7 +183,7 @@ DJOSER = {
 }
 
 # Force Djoser to use your frontend domain in the email links
-DOMAIN = 'localhost:5173'
+DOMAIN = config('FRONTEND_BASE_URL') 
 SITE_NAME = 'Dhaka University IT Society'
 
 SWAGGER_SETTINGS = {
