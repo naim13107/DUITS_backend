@@ -5,23 +5,18 @@ from datetime import timedelta
 
 FRONTEND_ALLOW = config('FRONTEND_ALLOW',default = '*')
 BACKEND_ALLOW = config('BACKEND_ALLOW',default = '*')
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = config('DEBUG',default = False)
 
 ALLOWED_HOSTS = [BACKEND_ALLOW, FRONTEND_ALLOW , 'duits-backend.vercel.app', 'duits-frontend.vercel.app']
 AUTH_USER_MODEL = 'users.User'
 
-# Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -81,16 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'duits_backend.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -102,8 +87,7 @@ DATABASES = {
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -125,8 +109,7 @@ SIMPLE_JWT = {
    "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
 }
 
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
+
 
 LANGUAGE_CODE = 'en-us'
 
@@ -142,15 +125,12 @@ BACKEND_BASE_URL = config('BACKEND_BASE_URL')
 CORS_ALLOWED_ORIGINS = [
     BACKEND_BASE_URL, 
     FRONTEND_BASE_URL, 
-    # You can add your production frontend URL here later once it is live!
-    # "https://www.duits.com", 
+   
 ]
 
-# Allow the frontend to send credentials like authentication cookies/tokens
 CORS_ALLOW_CREDENTIALS = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
+
 
 STATIC_URL = 'static/'
 
@@ -170,20 +150,19 @@ DJOSER = {
     
     'LOGIN_FIELD': 'email',
     'USER_CREATE_PASSWORD_RETYPE': True,
-    'TOKEN_MODEL': None, # We use JWT, not standard tokens
+    'TOKEN_MODEL': None, 
     
-    # --- NEW EMAIL SETTINGS ---
     'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     
-    # ⚠️ Point these URLs to your React Frontend (Vite uses port 5173)
+   
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
 }
 
-# Force Djoser to use your frontend domain in the email links
-DOMAIN = config('FRONTEND_BASE_URL') 
+
+DOMAIN = config('DOMAIN')  
 SITE_NAME = 'Dhaka University IT Society'
 
 SWAGGER_SETTINGS = {
