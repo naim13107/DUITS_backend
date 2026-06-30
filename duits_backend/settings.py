@@ -13,7 +13,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG',default = False)
 
-ALLOWED_HOSTS = [BACKEND_ALLOW, FRONTEND_ALLOW , 'duits-backend.vercel.app', 'duits-frontend.vercel.app']
+ALLOWED_HOSTS = ['127.0.0.1',BACKEND_ALLOW, FRONTEND_ALLOW , 'duits-backend.vercel.app', 'duits-frontend.vercel.app']
 AUTH_USER_MODEL = 'users.User'
 
 
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ROOT_URLCONF = 'duits_backend.urls'
 
 TEMPLATES = [
@@ -132,7 +134,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 import os
 
